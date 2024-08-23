@@ -15,19 +15,6 @@ const Navbar = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-/*   const featchPlaces = (value) => {
-    var requestOptions = {
-      method: 'GET',
-    };
-
-    fetch("https://api.geoapify.com/v1/geocode/autocomplete?text=fan&apiKey=ca3c2b31240e49b5b971c8b6c469af14", requestOptions)
-      .then(response => response.json())
-      .then(result => result.features.map((item)=>{setPlaces((prev)=> [...prev , item.properties.address_line1 + "," +  item.properties.address_line2 ]  )}))
-      .catch(error => console.log('error', error));
-  }
-  useEffect(()=>{
-    featchPlaces('value')
-  } , []) */
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -45,7 +32,7 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <div className='sm:hidden'>
           <IoMenu
-            className='text-5xl cursor-pointer font-semibold text-orange-600'
+            className='text-5xl cursor-pointer font-semibold text-[#C49C74]'
             onClick={() => setOpen(!open)}
           />
 
@@ -73,13 +60,13 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className={`z-10 relative mt-6 flex flex-col justify-center items-center h-full px-4 md:px-8 text-center transition-all duration-300 ${open ? 'mt-48' : 'mt-6'}`}>
-        <h2 className={`text-3xl md:text-5xl mt-48 font-bold mb-4 md:mb-6 ${open ? 'mt-12' : 'mt-0'}`}>Explore your place to stay</h2>
+      <div className={`z-10 relative flex flex-col justify-center items-center h-full px-4 md:px-8 text-center transition-all duration-300 ${open ? 'mt-48' : 'mt-1'}`}>
+        <h2 className={`text-3xl md:text-5xl  font-bold mb-4 md:mb-6 ${open ? 'mt-12' : 'mt-0'}`}>Explore your place to stay</h2>
         <div className="bg-gray-800 bg-opacity-75 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-lg md:max-w-2xl">
           {/* Search Bar */}
           <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
             <PlaceKit apiKey={process.env.REACT_APP_KEY }className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" placeholder='Place' />
-            <button className="bg-orange-500 px-4 py-3 max-sm:my-2 rounded text-white hover:bg-orange-600 transition duration-300">Search</button>
+            <button className="bg-[#C49C74] px-4 py-3 max-sm:my-2 rounded text-white hover:bg-[#caa580] transition duration-300">Search</button>
           </div>
 
           {/* Check-in, Check-out, Guests */}
@@ -90,7 +77,7 @@ const Navbar = () => {
           </div>
 
           {/* Checkout Button */}
-          <button className="bg-orange-500 w-full py-3 rounded text-white hover:bg-orange-600 transition duration-300">Checkout</button>
+          <button className="bg-[#C49C74] w-full py-3 rounded text-white hover:bg-[#b99979] transition duration-300">Checkout</button>
         </div>
       </div>
 
@@ -99,7 +86,6 @@ const Navbar = () => {
         <div className='flex space-x-1 mt-3'>
           <GoDotFill onClick={() => setCurrentIndex(0)} className={currentIndex == 0 ? 'text-2xl text-gray-500 cursor-pointer' : 'text-2xl text-white cursor-pointer'} />
           <GoDotFill onClick={() => { setCurrentIndex(1) }} className={currentIndex == 1 ? 'text-2xl text-gray-400 cursor-pointer' : 'text-2xl text-white cursor-pointer'} />
-
         </div>
       </div>
     </div>
