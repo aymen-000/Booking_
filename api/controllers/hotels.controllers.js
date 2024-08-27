@@ -90,8 +90,7 @@ const getOneHotel = async (req, res, next) => {
 
 const getAllHotels = async (req, res, next) => {
     try {
-        const query = {};
-
+        const query = {}
         // Example: Using $or to match either city or address
         if (req.query.place) {
             const place = req.query.place.toLowerCase();
@@ -102,8 +101,8 @@ const getAllHotels = async (req, res, next) => {
         }
 
         // Handle minimum rating
-        if (req.query.minRating) {
-            const rating = req.query.minRating.toLowerCase();
+        if (req.query.reviews) {
+            const rating = req.query.reviews.toLowerCase();
             if (rating === 'good') {
                 query.rating = { $gte: 4.5 };
             } else if (rating === 'average') {
@@ -121,25 +120,27 @@ const getAllHotels = async (req, res, next) => {
                 query.cheapestPrice = { $gte: 100 };
             }
         }
-
+        console.log(parseInt(req.query.rooms, 10))
         // Handle room count filtering by array length
-        if (req.query.room) {
-            query.$expr = { $eq: [{ $size: "$rooms" }, parseInt(req.query.room, 10)] };
+        if (req.query.rooms) {
+            const roomsCount = parseInt(req.query.rooms, 10);
+            if (!isNaN(roomsCount)) {
+                query['rooms'] = { $size: roomsCount };
+            }
         }
-
         // Handle pagination
         const startIndex = parseInt(req.query.startIndex) || 0 
         const limit = parseInt(req.query.limit) || 2 
 
         // Fetch hotels based on the constructed query
         const hotels = await Hotel.find(query).skip(startIndex).limit(limit);
-        length = await Hotel.countDocuments()
+        length = await Hotel.find(query).countDocuments()
         // Send the filtered results along with pagination info
         res.status(200).json({
             hotels,
             limit , 
             startIndex , 
-            length
+            length , 
         });
     } catch (err) {
         next(errorHandler(500, err));

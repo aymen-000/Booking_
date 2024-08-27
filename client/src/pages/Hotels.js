@@ -20,7 +20,6 @@ import { Icon } from 'leaflet';
 // Component to change map center dynamically
 function ChangeMapCenter({ center }) {
   const map = useMap();
-
   useEffect(() => {
     if (center.length > 0) {
       map.setView(center, map.getZoom()); // Update map center
@@ -35,7 +34,6 @@ function Hotels() {
     iconUrl: icon1,
     iconSize: [38, 38]
   });
-
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState([37.09024, -95.712891]); // Default center
@@ -48,11 +46,16 @@ function Hotels() {
   const [rooms, setRooms] = useState('');
   const [distance, setDistance] = useState('');
   const [reviews, setReviews] = useState('');
-  const [startIndex , setStartIndex] = useState(0)
-  const [length , setLength] = useState(0)
-  const fetchHotels = async () => {
+  const [startIndex, setStartIndex] = useState(0)
+  const [length, setLength] = useState(0)
+  const fetchHotels = async (reset = false) => {
     setLoading(true);
     try {
+      if (reset) {
+        setHotels([]); // Clear the hotels list if reset is true (when filters change)
+        setStartIndex(0); // Reset the start index if resetting the list
+      }
+
       const query = new URLSearchParams({
         place,
         checkin,
@@ -61,15 +64,19 @@ function Hotels() {
         rooms,
         distance,
         reviews,
-        startIndex, 
-        limit: 2 
+        startIndex,
+        limit: 2
       }).toString();
+      console.log(startIndex)
       const result = await axios.get(`http://localhost:8800/api/hotels/all?${query}`);
-      setLength(result.data.length)
-      setHotels(prevHotels => [...prevHotels, ...result.data.hotels]);
-      if (result.data.hotels.length > 0) {
-        setMapCenter(result.data.hotels[0].coordinates); // Set default center to the first hotel's coordinates
+      setLength(result.data.length);
+      console.log(result.data.hotels)
+      setHotels(prevHotels => [...prevHotels, ...result.data.hotels]); // Append new results to the existing list
+
+      if (result.data.hotels.length > 0 && reset) {
+        setMapCenter(result.data.hotels[0].coordinates); // Set default center to the first hotel's coordinates if resetting
       }
+
       setLoading(false);
     } catch (err) {
       console.error(err); // Use console.error for logging errors
@@ -77,8 +84,13 @@ function Hotels() {
     }
   };
   useEffect(() => {
-    fetchHotels();
-  }, [place, checkin, checkout, price, rooms, distance, reviews , startIndex]);
+    fetchHotels(true); // Reset hotels list when filters change
+  }, [place, checkin, checkout, price, rooms, distance, reviews]);
+  useEffect(() => {
+    if (startIndex > 0) {
+        fetchHotels();
+    }
+}, [startIndex]);
   return (
     <div>
       <SearchHeader place={place} checkin={checkin} checkout={checkout} />
@@ -124,12 +136,14 @@ function Hotels() {
                   </div>
                 ))
               )}
-              {!(hotels.length == length) && !loading && (
+              {!(hotels.length >= length) && !loading && (
                 <div className="flex justify-center my-4">
                   <button
-                    onClick={() => setStartIndex(prevIndex => prevIndex + 2)}
+                        onClick={async () => {
+                          setStartIndex((prevIndex)=>{return prevIndex+2});
+                      }}
                     className="bg-[#C49C74] text-white py-2 px-4 rounded"
-                    disabled={hotels.length == length}
+                    disabled={hotels.length >= length}
                   >
                     Load More
                   </button>
