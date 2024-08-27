@@ -4,8 +4,8 @@ import SearchHeader from '../componenets/SearchHeader';
 import SingleHotelCard from '../componenets/SingleHotelCard';
 import Footer from '../componenets/Footer';
 import img1 from '../assets/HotelsImgs/hotel1.jpg';
-import axios from "axios";
-import Filters from '../componenets/Filters'
+import axios from 'axios';
+import Filters from '../componenets/Filters';
 import "leaflet/dist/leaflet.css";
 import icon1 from "../assets/icon.png";
 import {
@@ -48,34 +48,37 @@ function Hotels() {
   const [rooms, setRooms] = useState('');
   const [distance, setDistance] = useState('');
   const [reviews, setReviews] = useState('');
-
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const query = new URLSearchParams({
-          place,
-          checkin,
-          checkout,
-          price,
-          rooms,
-          distance,
-          reviews,
-        }).toString();
-        const result = await axios.get(`http://localhost:8800/api/hotels/all?${query}`);
-        setHotels(result.data);
-        if (result.data.length > 0) {
-          setMapCenter(result.data[0].coordinates); // Set default center to the first hotel's coordinates
-        }
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
+  const [startIndex , setStartIndex] = useState(0)
+  const [length , setLength] = useState(0)
+  const fetchHotels = async () => {
+    setLoading(true);
+    try {
+      const query = new URLSearchParams({
+        place,
+        checkin,
+        checkout,
+        price,
+        rooms,
+        distance,
+        reviews,
+        startIndex, 
+        limit: 2 
+      }).toString();
+      const result = await axios.get(`http://localhost:8800/api/hotels/all?${query}`);
+      setLength(result.data.length)
+      setHotels(prevHotels => [...prevHotels, ...result.data.hotels]);
+      if (result.data.hotels.length > 0) {
+        setMapCenter(result.data.hotels[0].coordinates); // Set default center to the first hotel's coordinates
       }
-    };
-
+      setLoading(false);
+    } catch (err) {
+      console.error(err); // Use console.error for logging errors
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchHotels();
-  }, [place, checkin, checkout, price, rooms, distance, reviews]);
-
+  }, [place, checkin, checkout, price, rooms, distance, reviews , startIndex]);
   return (
     <div>
       <SearchHeader place={place} checkin={checkin} checkout={checkout} />
@@ -86,8 +89,8 @@ function Hotels() {
         setReviews={setReviews}
       />
       <div className='flex bg-[#F0EFEF]'>
-        <div className='py-4 space-y-2 w-1/2 max-lg:w-full  items-start flex-col justify-start'>
-          {loading ? (
+        <div className='py-4 space-y-2 w-full md:w-1/2 items-start flex-col justify-start'>
+          {loading && hotels.length === 0 ? (
             <div className='flex justify-center my-4'>
               <div
                 className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-warning motion-reduce:animate-[spin_1.5s_linear_infinite] items-center justify-center mx-auto"
@@ -99,31 +102,44 @@ function Hotels() {
               </div>
             </div>
           ) : (
-            hotels.length === 0 ? (
-              <div className="flex justify-center items-center py-10 w-full">
-                <p className="text-gray-500 text-lg">No hotels found.</p>
-              </div>
-            ) : (
-              hotels.map((hotel, index) => (
-                <div
-                  key={index}
-                  onMouseEnter={() => setMapCenter(hotel.coordinates)}
-                  className='p-0 w-full'
-                >
-                  <SingleHotelCard
-                    HotelImg={hotel.photos[0] || img1}
-                    price={hotel.cheapestPrice}
-                    location={hotel.city}
-                    reviews={hotel.rating}
-                    numRooms={hotel.rooms.length}
-                  />
+            <>
+              {hotels.length === 0 ? (
+                <div className="flex justify-center items-center py-10 w-full">
+                  <p className="text-gray-500 text-lg">No hotels found.</p>
                 </div>
-              ))
-            )
+              ) : (
+                hotels.map((hotel, index) => (
+                  <div
+                    key={index}
+                    onMouseEnter={() => setMapCenter(hotel.coordinates)}
+                    className='p-0 w-full'
+                  >
+                    <SingleHotelCard
+                      HotelImg={hotel.photos[0] || img1}
+                      price={hotel.cheapestPrice}
+                      location={hotel.city}
+                      reviews={hotel.rating}
+                      numRooms={hotel.rooms.length}
+                    />
+                  </div>
+                ))
+              )}
+              {!(hotels.length == length) && !loading && (
+                <div className="flex justify-center my-4">
+                  <button
+                    onClick={() => setStartIndex(prevIndex => prevIndex + 2)}
+                    className="bg-[#C49C74] text-white py-2 px-4 rounded"
+                    disabled={hotels.length == length}
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
         {hotels.length > 0 && (
-          <div className='w-1/2 ml-3 sticky rounded-lg right-4  top-0 h-screen b bottom-3 max-lg:hidden'>
+          <div className='w-full md:w-1/2 ml-3 sticky top-0 h-screen max-lg:hidden'>
             <MapContainer
               style={{
                 height: "100%",
@@ -156,4 +172,3 @@ function Hotels() {
 }
 
 export default Hotels;
-

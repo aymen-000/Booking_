@@ -127,16 +127,24 @@ const getAllHotels = async (req, res, next) => {
             query.$expr = { $eq: [{ $size: "$rooms" }, parseInt(req.query.room, 10)] };
         }
 
-        // Fetch hotels based on the constructed query
-        const hotels = await Hotel.find(query);
+        // Handle pagination
+        const startIndex = parseInt(req.query.startIndex) || 0 
+        const limit = parseInt(req.query.limit) || 2 
 
-        // Send the filtered results
-        res.status(200).json(hotels);
+        // Fetch hotels based on the constructed query
+        const hotels = await Hotel.find(query).skip(startIndex).limit(limit);
+        length = await Hotel.countDocuments()
+        // Send the filtered results along with pagination info
+        res.status(200).json({
+            hotels,
+            limit , 
+            startIndex , 
+            length
+        });
     } catch (err) {
         next(errorHandler(500, err));
     }
 };
-
 module.exports = {
     createHotel,
     deleteHotel,

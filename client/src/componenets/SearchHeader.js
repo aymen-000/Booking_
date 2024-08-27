@@ -111,9 +111,9 @@ function SearchHeader({ place, checkin, checkout }) {
           </div>
 
           {/* Checkout Button */}
-          <Link to={`/hotels?${query}`}>
-            <button className="bg-[#C49C74] flex-1 w-full lg:w-[200px] p-3 lg:p-4 rounded text-white hover:bg-[#b99979] transition duration-300">
-              Search
+          <Link to={`/hotels?${query}`} className='w-full  lg:w-[200px]'>
+            <button className="bg-[#C49C74] w-full lg:w-fit flex-1   p-4 rounded text-white hover:bg-[#b99979] transition duration-300">
+              Search1
             </button>
           </Link>
         </div>
