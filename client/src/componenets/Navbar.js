@@ -4,11 +4,16 @@ import { IoMenu } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
 import { PlaceKit } from '@placekit/autocomplete-react';
 import '@placekit/autocomplete-js/dist/placekit-autocomplete.css';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+  const [place, setPlace] = useState('')
+  const [checkin, setCheckin] = useState('')
+  const [checkout, setCheckout] = useState('')
+  const [guests, setGuests] = useState('')
   // autoComplete 
   const [open, setOpen] = useState(false);
-  const [places , setPlaces] = useState([])
+  const [places, setPlaces] = useState([])
   const images = [
     '../assets/bg1.jpg', // Replace these with the paths to your images
     '../assets/bg2.jpg',
@@ -65,19 +70,22 @@ const Navbar = () => {
         <div className="bg-gray-800 bg-opacity-75 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-lg md:max-w-2xl">
           {/* Search Bar */}
           <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
-            <PlaceKit apiKey={process.env.REACT_APP_KEY }className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" placeholder='Place' />
-            <button className="bg-[#C49C74] px-4 py-3 max-sm:my-2 rounded text-white hover:bg-[#caa580] transition duration-300">Search</button>
+            <PlaceKit apiKey={process.env.REACT_APP_KEY} className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" placeholder='Place' onChange={(e) => { setPlace(e.target.value) }} />
           </div>
 
           {/* Check-in, Check-out, Guests */}
           <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
-            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" type="date" placeholder="Check in" />
-            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" type="date" placeholder="Check out" />
-            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400" type="number" min={"0"} placeholder="Guests" />
+            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" type="date" placeholder="Check in" onChange={(e) => { setCheckin(e.target.value) }} />
+            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400 mb-4 md:mb-0" type="date" placeholder="Check out" onChange={(e) => { setCheckout(e.target.value) }} />
+            <input className="flex-1 p-3 md:p-4 rounded bg-gray-700 placeholder-gray-400" type="number" min={"0"} placeholder="Guests" onChange={(e) => { setGuests(e.target.value) }} />
           </div>
 
           {/* Checkout Button */}
-          <button className="bg-[#C49C74] w-full py-3 rounded text-white hover:bg-[#b99979] transition duration-300">Checkout</button>
+          <Link to={`/hotels?place=${place}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`}>
+            <button className="bg-[#C49C74] w-full py-3 rounded text-white hover:bg-[#b99979] transition duration-300">
+              Search
+            </button>
+          </Link>
         </div>
       </div>
 

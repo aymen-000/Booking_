@@ -1,0 +1,44 @@
+.button {
+  display: inline-block;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: .15rem;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  margin-top: 2px;
+}
+
+.button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #C49C74; /* Updated color */
+  z-index: -2;
+  transition: all .3s; /* Added transition for smooth effect */
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #a67b4b; /* Darker shade of #C49C74 */
+  transition: all .3s;
+  z-index: -1;
+}
+
+.button:hover {
+  color: #fff;
+}
+
+.button:hover::before {
+  width: 100%;
+}

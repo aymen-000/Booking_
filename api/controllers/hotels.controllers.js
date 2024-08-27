@@ -76,13 +76,52 @@ const getOneHotel = async (req, res, next) => {
 
 const getAllHotels = async (req, res, next) => {
     try {
-        const hotels = await Hotel.find({});
+        const query = {};
+
+        // Example: Using $or to match either city or address
+        if (req.query.place) {
+            const place = req.query.place.toLowerCase();
+            query.$or = [
+                { city: { $regex: place, $options: 'i' } },
+                { address: { $regex: place, $options: 'i' } }
+            ];
+        }
+
+        // Handle minimum rating
+        if (req.query.minRating) {
+            const rating = req.query.minRating.toLowerCase();
+            if (rating === 'good') {
+                query.rating = { $gte: 4.5 };
+            } else if (rating === 'average') {
+                query.rating = { $gte: 2.5, $lt: 4.5 };
+            } else if (rating === 'poor') {
+                query.rating = { $lt: 2.5 };
+            }
+        }
+
+        // Handle price classification
+        if (req.query.price) {
+            if (req.query.price === 'low') {
+                query.cheapestPrice = { $lt: 150 };
+            } else if (req.query.price === 'high') {
+                query.cheapestPrice = { $gte: 150 };
+            }
+        }
+
+        // Handle room count filtering by array length
+        if (req.query.room) {
+            query.$expr = { $eq: [{ $size: "$rooms" }, parseInt(req.query.room, 10)] };
+        }
+
+        // Fetch hotels based on the constructed query
+        const hotels = await Hotel.find(query);
+
+        // Send the filtered results
         res.status(200).json(hotels);
     } catch (err) {
         next(errorHandler(500, err));
     }
 };
-
 module.exports = {
     createHotel,
     deleteHotel,

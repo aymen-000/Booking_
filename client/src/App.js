@@ -1,15 +1,17 @@
-import { BrowserRouter, Route , Routes} from "react-router-dom";
+// App.js
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Hotel from "./pages/Hotel";
 import Hotels from "./pages/Hotels";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path='/hotels' element={<Hotels/>}/>
-        <Route path='/hotels/:id' element={<Hotel/>}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/hotels" element={<Hotels />} />
+        <Route path="/hotels/:id" element={<Hotel />} />
       </Routes>
     </BrowserRouter>
   );
