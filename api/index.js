@@ -33,7 +33,7 @@ app.use((err , req , res , next) => {
 // Database connection
 mongoose.connect(process.env.DATABASE_URL)
     .then(() => {
-        console.log('Connected to the database');
+        console.log('connected to the database');
         // Start the server only after successfully connecting to the database
         app.listen(8800, () => {
             console.log('Server is running on port 8800');
