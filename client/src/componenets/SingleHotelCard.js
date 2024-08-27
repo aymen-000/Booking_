@@ -5,7 +5,7 @@ import { RiHotelFill } from 'react-icons/ri'; // Hotel icon for rooms
 import './style.css'
 function SingleHotelCard({ HotelImg, price, location, reviews, numRooms, distance }) {
   return (
-    <div className="flex max-lg:w-2/3 shadow-md  max-sm:w-full  max-lg:mx-auto  flex-col p-4 w-1/2  mx-4 bg-white border hover:shadow-2xl border-gray-200 rounded-xl  space-y-4 items-center transition-transform transform duration-300 ease-in-out cursor-pointer " >
+    <div className="flex  shadow-md    flex-col p-4 mx-4 bg-white border hover:shadow-2xl border-gray-200 rounded-xl  space-y-4 items-center transition-transform transform duration-300 ease-in-out cursor-pointer " >
       <div className="relative flex flex-col md:flex-row md:space-x-5 space-y-3 md:space-y-0 rounded-xl overflow-hidden">
         <div className="w-full md:w-2/3 bg-white grid place-items-center">
           <img src={HotelImg} alt="Hotel" className="rounded-xl w-full h-full object-cover" />

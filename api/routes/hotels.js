@@ -4,7 +4,7 @@ const { verifyUser, verifyAdmin } = require('../utils/verifyToken');
 const Router = express.Router();
 
 // Create a hotel
-Router.post('/create',verifyAdmin ,  createHotel);
+Router.post('/create' ,  createHotel);
 
 // Update a hotel by ID
 Router.put('/update/:id', verifyAdmin , updateHotel);

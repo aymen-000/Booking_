@@ -39,14 +39,17 @@ const HotelSchema = new Schema({
     type: {
         type: String, 
         required: true
-    } , 
-    desc : {
-        type : String , 
-        required : true 
+    },
+    desc: {
+        type: String, 
+        required: true 
+    },
+    coordinates: {
+        type: [Number], // Array of numbers
     }
 }, {
     timestamps: true 
 });
 
-Hotel = mongoose.model('Hotel', HotelSchema);
-module.exports = {Hotel}
+const Hotel = mongoose.model('Hotel', HotelSchema);
+module.exports = { Hotel };

@@ -2,9 +2,15 @@ const express = require('express');
 const { Hotel } = require('../models/Hotel'); 
 const { errorHandler } = require('../utils/errorMiddleware'); 
 
+
 const createHotel = async (req, res, next) => {
     try {
-        const { rooms, name, city, type, cheapestPrice, rating, features, photos, address , desc } = req.body;
+        const { rooms, name, city, type, cheapestPrice, rating, features, photos, address, desc, coordinates } = req.body;
+
+        // Validate required fields
+        if (!name || !city || !type || !cheapestPrice || !address || !desc) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
 
         // Create a new hotel instance with an object
         const hotel = new Hotel({
@@ -16,8 +22,9 @@ const createHotel = async (req, res, next) => {
             rating,
             features,
             photos,
-            address , 
-            desc
+            address,
+            desc,
+            coordinates // Include coordinates if provided
         });
 
         // Save the hotel to the database
@@ -47,7 +54,14 @@ const deleteHotel = async (req, res, next) => {
 const updateHotel = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const updatedHotel = await Hotel.findByIdAndUpdate(id, req.body, { new: true });
+        const updateData = req.body;
+
+        // Validate required fields if needed
+        if (!updateData.name || !updateData.city || !updateData.type || !updateData.cheapestPrice || !updateData.address || !updateData.desc) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const updatedHotel = await Hotel.findByIdAndUpdate(id, updateData, { new: true });
 
         if (!updatedHotel) {
             return res.status(404).json({ message: 'Hotel not found' });
@@ -102,9 +116,9 @@ const getAllHotels = async (req, res, next) => {
         // Handle price classification
         if (req.query.price) {
             if (req.query.price === 'low') {
-                query.cheapestPrice = { $lt: 150 };
+                query.cheapestPrice = { $lt: 100 };
             } else if (req.query.price === 'high') {
-                query.cheapestPrice = { $gte: 150 };
+                query.cheapestPrice = { $gte: 100 };
             }
         }
 
@@ -122,6 +136,7 @@ const getAllHotels = async (req, res, next) => {
         next(errorHandler(500, err));
     }
 };
+
 module.exports = {
     createHotel,
     deleteHotel,
