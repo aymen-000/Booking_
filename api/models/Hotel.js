@@ -19,7 +19,7 @@ const HotelSchema = new Schema({
         required: true
     },
     features: {
-        type: Boolean, 
+        type: [String], 
         default: false
     },
     rating: {
@@ -45,7 +45,7 @@ const HotelSchema = new Schema({
         required: true 
     },
     coordinates: {
-        type: [Number], // Array of numbers
+        type: [Number]
     }
 }, {
     timestamps: true 

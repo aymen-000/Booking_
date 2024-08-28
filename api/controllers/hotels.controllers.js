@@ -57,7 +57,7 @@ const updateHotel = async (req, res, next) => {
         const updateData = req.body;
 
         // Validate required fields if needed
-        if (!updateData.name || !updateData.city || !updateData.type || !updateData.cheapestPrice || !updateData.address || !updateData.desc) {
+        if (!updateData.name || !updateData.city || !updateData.type || !updateData.cheapestPrice || !updateData.address || !updateData.desc || !updateData.rating) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
@@ -120,7 +120,6 @@ const getAllHotels = async (req, res, next) => {
                 query.cheapestPrice = { $gte: 100 };
             }
         }
-        console.log(parseInt(req.query.rooms, 10))
         // Handle room count filtering by array length
         if (req.query.rooms) {
             const roomsCount = parseInt(req.query.rooms, 10);
