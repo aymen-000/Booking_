@@ -120,7 +120,6 @@ const getAllHotels = async (req, res, next) => {
                 query.cheapestPrice = { $gte: 100 };
             }
         }
-        console.log(parseInt(req.query.rooms, 10))
         // Handle room count filtering by array length
         if (req.query.rooms) {
             const roomsCount = parseInt(req.query.rooms, 10);
