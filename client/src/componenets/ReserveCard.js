@@ -4,12 +4,24 @@ import { Card, Button } from 'flowbite-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CiCalendarDate } from "react-icons/ci";
-
+import { useContext  } from 'react';
+import { UserContext } from '../UserContext';
+import BookingModal from './Modal';
 function ReserveCard({ price, review }) {
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
   const [guests, setGuests] = useState(1);
-
+  const {user , exist} = useContext(UserContext)
+  const [openModal , setOpenModal] = useState(false)
+  const BookeHotel = (e)=>{
+    e.preventDefault()
+    console.log('clicked')
+    if (exist){
+      console.log('exist')
+    } else {
+      setOpenModal(true)
+    }
+  }
   // Calculate the number of nights based on selected dates
   const getNumberOfNights = () => {
     if (!checkInDate || !checkOutDate) return 0;
@@ -94,9 +106,10 @@ function ReserveCard({ price, review }) {
         <span>Total</span>
         <span>${total}</span>
       </div>
-      <Button className="bg-[#B38B68] w-full mt-4 py-2 text-white rounded-lg hover:bg-[#9f7d5e]">
+      <Button className="bg-[#B38B68] w-full mt-4 py-2 text-white rounded-lg hover:bg-[#9f7d5e]" onClick={(e)=>{BookeHotel(e)}}>
         Reserve
       </Button>
+      <BookingModal setOpenModal={setOpenModal} openModal={openModal}/>
     </div>
   );
 }

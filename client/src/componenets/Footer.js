@@ -7,9 +7,9 @@ function Footer() {
         <footer className="bg-[#252525] text-white py-8">
             <div className="container mx-auto px-4 text-center">
                 <div className="flex justify-center mb-4">
-                    <Link href="/" className="mx-2 hover:text-[#C49C74] transition duration-300">Home</Link>
-                    <Link href="/" className="mx-2 hover:text-[#C49C74] transition duration-300">About Us</Link>
-                    <Link href="/hotels" className="mx-2 hover:text-[#C49C74] transition duration-300">Hotels</Link>
+                    <Link to="/" className="mx-2 hover:text-[#C49C74] transition duration-300">Home</Link>
+                    <Link to="/about" className="mx-2 hover:text-[#C49C74] transition duration-300">About Us</Link>
+                    <Link to="/hotels?place=''" className="mx-2 hover:text-[#C49C74] transition duration-300">Hotels</Link>
                     <Link to={"/contact"} className="mx-2 hover:text-[#C49C74] transition duration-300">Contact</Link>
                 </div>
                 <div className="mb-4">

@@ -18,11 +18,13 @@ const Register = async (req, res, next) => {
     }
 };
 
-
+const Logout = async (req, res) => {
+    res.cookie('token', '').json(true)
+}
 const Login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-        
+
         // Find the user by username
         const user = await User.findOne({ username });
         if (!user) {
@@ -34,15 +36,25 @@ const Login = async (req, res, next) => {
         if (!isPasswordValid) {
             return next(errorHandler(401, "Invalid password"));
         }
-        const token = jwt.sign({id:user._id , isAdmin:user.isAdmin} , process.env.JWT_KEY)
+
+        // Generate a JWT with an expiration time
+        const token = jwt.sign(
+            { id: user._id, isAdmin: user.isAdmin, username: user.username },
+            process.env.JWT_KEY,
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
         // Convert user document to a plain JavaScript object
         const { password: hashedPassword, isAdmin, ...other } = user.toObject();
-        
-        // If the login is successful, return the user info
-        res.cookie("token" , token , {httpOnly : true}).status(200).json({ message: "Login successful", ...other });
+
+        // If the login is successful, return the user info and set the cookie
+        res.cookie("token", token, {
+            httpOnly: true ,
+            SameSite: 'None', // Required for cross-site cookies
+        }).status(200).json({ message: "Login successful", ...other });
+
     } catch (err) {
         next(errorHandler(500, err.message));
     }
 };
 
-module.exports = { Register , Login};
+module.exports = { Register, Login , Logout };

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../input.css';
 import { IoMenu } from "react-icons/io5";
 import Footer from '../componenets/Footer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import axios from 'axios';
 import { Button, Spinner } from 'flowbite-react';
+import { UserContext } from '../UserContext';
 function SignUp() {
     const [open, setOpen] = useState(false);
     const [username , setusername] = useState('')
@@ -16,6 +17,8 @@ function SignUp() {
     const [loading , setLoading] = useState(false)
     const [error , setError] = useState(null)
     const [equal , setEqual] = useState(true)
+    const {setUser, setExist} = useContext(UserContext)
+    const navigate = useNavigate()
     useEffect(()=>{
       if (password != confirmPassword) {
         setEqual(false)
@@ -28,8 +31,10 @@ function SignUp() {
         setLoading(true)
         axios.post('http://localhost:8800/api/auth/register' , {username : username , password:password , email : email}).then(
             (result)=>{
-                console.log(result.data)
+                setUser(result.data)
+                setExist(true)
                 setLoading(false)
+                navigate('/signin')
             }
         ).catch(
             (err)=>{
