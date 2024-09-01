@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import '../input.css';
 import { IoMenu } from "react-icons/io5";
 import Footer from '../componenets/Footer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import axios from 'axios';
 import { Button, Spinner } from 'flowbite-react';
+import { UserContext } from '../UserContext';
 function SignIn() {
+    const {setUser , setExist} = useContext(UserContext)
     const [open, setOpen] = useState(false);
     const [username , setusername] = useState('')
     const [password , setPassword] = useState('') 
     const [loading , setLoading] = useState(false)
     const [error , setError] = useState(null)
+    const navigate = useNavigate()
     const submit = (e )=>{
         e.preventDefault()
         setLoading(true)
-        axios.post('http://localhost:8800/users/login' , {username : username , password:password}).then(
+        axios.post('http://localhost:8800/api/auth/login' , {username : username , password:password} , { withCredentials: true }).then(
             (result)=>{
-                console.log(result.data)
+                setUser(result.data)
                 setLoading(false)
+                setExist(true)
+                navigate("/hotels?place=&checkin=&checkout=&guests=")
             }
         ).catch(
             (err)=>{
+                
                 setError("try again...!!!")
                 setLoading(false)
             }

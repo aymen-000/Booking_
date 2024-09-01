@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../input.css';
 import { IoMenu } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
 import { PlaceKit } from '@placekit/autocomplete-react';
 import '@placekit/autocomplete-js/dist/placekit-autocomplete.css';
 import { Link } from 'react-router-dom';
-
+import { UserContext } from '../UserContext';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Spinner } from 'flowbite-react';
 const Navbar = () => {
+  const [loading , setLoading] = useState(false)
   const [place, setPlace] = useState('')
   const [checkin, setCheckin] = useState('')
   const [checkout, setCheckout] = useState('')
   const [guests, setGuests] = useState('')
+  const {exist , user } = useContext(UserContext)
   // autoComplete 
   const [open, setOpen] = useState(false);
+  const [openUser , setOpenUser] = useState(false)
   const [places, setPlaces] = useState([])
+  const navigate  = useNavigate()
   const images = [
     '../assets/bg1.jpg', // Replace these with the paths to your images
     '../assets/bg2.jpg',
@@ -27,6 +34,18 @@ const Navbar = () => {
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, [])
+  const logout = (e) => {
+    setLoading(true)
+    axios.get('http://localhost:8800/api/auth/logout', { withCredentials: true }).then(
+      (result) => {
+        setLoading(false)
+        navigate('/signin')
+      }
+    ).catch((err) => {
+      setLoading(false)
+      console.log(err.message)
+    })
+  }
   return (
     <div className={currentIndex == 0 ? "relative bg-cover bg-center bg-nav_bg  text-white" : "relative bg-cover bg-center bg-nav_bg_2  text-white"} >
       <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -43,25 +62,59 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className={open ? 'flex flex-col absolute top-20 right-5 w-[calc(100%-5rem)] mx-3 bg-black bg-opacity-90 rounded-lg z-30 mb-7' : 'hidden'}>
-            {['List your property', 'Support', 'Trips', 'Sign in', 'Get the app'].map((item, index) => (
-              <div
-                key={index}
-                className='border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer'
-                onClick={() => setOpen(false)} // Close the menu when an item is clicked
-              >
-                {item}
-              </div>
-            ))}
+            <Link
+              to='/list-property'
+              className='border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer'
+              onClick={() => setOpen(false)} // Close the menu when an item is clicked
+            >
+              List your property
+            </Link>
+            <Link
+              to='/support'
+              className='border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer'
+              onClick={() => setOpen(false)}
+            >
+              Support
+            </Link>
+            <Link
+              to='/trips'
+              className='border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer'
+              onClick={() => setOpen(false)}
+            >
+              Trips
+            </Link>
+            {!exist && <Link to='/hotels?place=' className="border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer" onClick={() => setOpen(false)}>sigin</Link>}
+            {exist && <Link to='/hotels?place=' className="border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer" onClick={() => setOpenUser(!openUser)}>{user?.username}</Link>}
+            {openUser && <Link to='/hotels?place=' className="border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer" onClick={() => setOpen(false)}>My bookings</Link>}
+            {openUser && <Link className="border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer flex items-center space-x-2" onClick={(e) => { logout(e); setOpen(true) }}>{loading && <Spinner className='w-4 mr-2' />}
+              Logout
+            </Link>}
+            <Link
+              to='/get-app'
+              className='border-t-2 border-white px-4 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer'
+              onClick={() => setOpen(false)}
+            >
+              Get the app
+            </Link>
           </div>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden sm:flex space-x-4 md:space-x-8 text-sm md:text-base items-center">
-          <a href="#" className="hover:underline">List your property</a>
-          <a href="#" className="hover:underline">Support</a>
-          <a href="#" className="hover:underline">Trips</a>
-          <a href="#" className="hover:underline">Sign in</a>
-          <button className="border border-white px-3 md:px-4 py-1 md:py-2 rounded-full hover:bg-white hover:text-black transition duration-300">Get the app</button>
+        <Link to='/' className="hover:underline" >Home</Link>
+          {exist && <div>
+            <Link onClick={() => { setOpenUser(!openUser) }}>{user?.username} </Link>
+            {openUser && <div className=' absolute top-20 mt-2 '>
+              <Link to='/hotels?place=' className="border-t-2 border-b-2 border-t-white px-2 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer" onClick={() => setOpen(false)}>My bookings</Link>
+              <Link to='/hotels?place=' className="border-t-2 mt-3  border-white px-2 py-3 hover:bg-white hover:text-black transition duration-300 cursor-pointer flex space-x-2 items-center mb-4" onClick={(e) => { logout(e); setOpen(true) }}>{loading && <Spinner className='w-4 mr-2' /> }Lougout</Link>
+            </div>}
+          </div>}
+          <Link to='/hotels?place=' className="hover:underline">Hotels</Link>
+          {!exist && <Link to='/signin' className="hover:underline" >sigin</Link>}
+
+          <button className="border border-white px-2 lg:px-3 md:px-4 py-1 md:py-2 rounded-full hover:bg-white hover:text-black transition duration-300">
+            Get the app
+          </button>
         </div>
       </div>
 
