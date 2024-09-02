@@ -58,10 +58,13 @@ function Hotel() {
                 </div>
 
               </div>
-              <div className='space-y-4 mx-auto max-lg:w-full'>
+              <div className='space-y-4 z-10 mx-auto max-lg:w-full'>
                 <ReserveCard review={hotel?.rating} price={hotel?.
                   cheapestPrice} />
-                <MapComponent coordinates={hotel?.coordinates} hotelName={hotel?.name} />
+                  <div className='z-10'>
+                  <MapComponent coordinates={hotel?.coordinates} hotelName={hotel?.name} />
+                    </div>
+                
               </div>
             </div>
             <Footer/>

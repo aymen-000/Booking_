@@ -33,7 +33,7 @@ function ReserveCard({ price, review }) {
   const total = numberOfNights * price;
 
   return (
-    <div className="w-full p-4 mx-auto bg-white rounded-lg shadow-lg">
+    <div className="w-full p-4 mx-auto bg-white rounded-lg shadow-lg z-50">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">{price}$ /night</h2>
         <div className="flex items-center">

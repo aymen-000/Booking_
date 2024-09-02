@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 function BookingModal({ openModal, setOpenModal }) {
     return (
-        <div className="">
-            <FlowbiteModal show={openModal} size="md" className="" onClose={() => setOpenModal(false)} popup>
+        <div className="bg-red-500 w-full h-full z-50">
+            <FlowbiteModal show={openModal} size="md" className="bg-opacity-25 pt-40 bg-gray-500" onClose={() => setOpenModal(false)}  popup>
                 <FlowbiteModal.Header />
                 <FlowbiteModal.Body>
                     <div className="text-center">

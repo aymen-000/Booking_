@@ -161,7 +161,7 @@ function Hotels() {
           )}
         </div>
         {hotels.length > 0 && (
-          <div className='w-full md:w-1/2 ml-3 sticky top-0 h-screen max-lg:hidden'>
+          <div className='w-full md:w-1/2 ml-3 z-10 sticky top-0 h-screen max-lg:hidden'>
             <MapContainer
               style={{
                 height: "100%",
